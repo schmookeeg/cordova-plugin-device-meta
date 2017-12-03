@@ -115,7 +115,7 @@ public class DeviceMeta extends CordovaPlugin {
 
         //return am.getRingerMode(); 
 
-        return Settings.Global.getInt(this.cordova.getActivity().getContentResolver(), "zen_mode");
+        return Settings.Secure.getInt(this.cordova.getActivity().getContentResolver(), "zen_mode");
     }
 
     private String getManufacturer() {
