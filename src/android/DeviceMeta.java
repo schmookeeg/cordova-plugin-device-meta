@@ -20,6 +20,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.NotificationManager;
+
 import com.ozexpert.devicemeta.Utils;
 
 /**
@@ -43,7 +45,8 @@ public class DeviceMeta extends CordovaPlugin {
             r.put("networkProvider", this.getNetworkProvider());
             r.put("ip", this.getIpAddress());
             r.put("manufacturer", this.getManufacturer());
-            r.put("DNDMode",this.getDNDMode());
+
+            r.put("DnDMode",this.getDNDMode());
 
             callbackContext.success(r);
         } else {
@@ -111,11 +114,16 @@ public class DeviceMeta extends CordovaPlugin {
     }
     
     private int getDNDMode() {
+
+        //int zenModeValue = Settings.Global.getInt(this.cordova.getActivity().getContentResolver(), "zen_mode");
         // AudioManager am = (AudioManager) ctx.getSystemService(Context.AUDIO_SERVICE);
 
         //return am.getRingerMode(); 
 
-        return Settings.Secure.getInt(this.cordova.getActivity().getContentResolver(), "zen_mode");
+        NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        return nm.getCurrentInterruptionFilter();
+        //return zenModeValue;
     }
 
     private String getManufacturer() {
