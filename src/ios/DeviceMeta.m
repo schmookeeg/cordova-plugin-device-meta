@@ -1,6 +1,7 @@
 /********* DeviceMeta.m Cordova Plugin Implementation *******/
 
 #import <Cordova/CDV.h>
+#import "Cordova/CDVViewController.h"
 #import "DeviceMeta.h"
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <CoreTelephony/CTCarrier.h>
@@ -27,11 +28,12 @@
 
 - (NSDictionary*)deviceProperties
 {
-    NSMutableDictionary* devProps = [NSMutableDictionary dictionaryWithCapacity:4];
+    NSMutableDictionary* devProps = [NSMutableDictionary dictionaryWithCapacity:5];
     [devProps setObject:@"Apple" forKey:@"manufacturer"];
     [devProps setObject:@([self isDebug]) forKey:@"debug"];
     [devProps setObject:[self getIPAddress] forKey:@"ip"];
     [devProps setObject:[self getNetworkProvider] forKey:@"networkProvider"];
+    [devProps setObject:[self jailbroken] forKey:@"root"];
 
     NSDictionary* devReturn = [NSDictionary dictionaryWithDictionary:devProps];
     return devReturn;
@@ -85,5 +87,57 @@
     }
     return @"%@M", [carrier carrierName];
 }
+
+- (NSString *) jailbroken {
+
+#if !(TARGET_IPHONE_SIMULATOR)
+
+    if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Applications/Cydia.app"])
+    {
+        return @"true";
+    }
+    else if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/MobileSubstrate/MobileSubstrate.dylib"])
+    {
+        return @"true";
+    }
+    else if ([[NSFileManager defaultManager] fileExistsAtPath:@"/bin/bash"])
+    {
+        return @"true";
+    }
+    else if ([[NSFileManager defaultManager] fileExistsAtPath:@"/usr/sbin/sshd"])
+    {
+        return @"true";
+    }
+    else if ([[NSFileManager defaultManager] fileExistsAtPath:@"/etc/apt"])
+    {
+        return @"true";
+    }
+
+    NSError *error;
+    NSString *testWriteText = @"Jailbreak test";
+    NSString *testWritePath = @"/private/jailbreaktest.txt";
+
+    [testWriteText writeToFile:testWritePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+
+    if (error == nil)
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:testWritePath error:nil];
+        return @"true";
+    }
+    else
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:testWritePath error:nil];
+    }
+
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cydia://package/com.example.package"]])
+    {
+        return @"true";
+    }
+
+#endif
+
+    return @"false";
+}
+
 
 @end
