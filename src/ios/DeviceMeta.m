@@ -30,7 +30,7 @@
 {
     NSMutableDictionary* devProps = [NSMutableDictionary dictionaryWithCapacity:5];
     [devProps setObject:@"Apple" forKey:@"manufacturer"];
-    [devProps setObject:@([self isDebug]) forKey:@"debug"];
+    [devProps setObject:@([self isDebug]) forKey:@"development"];
     [devProps setObject:[self getIPAddress] forKey:@"ip"];
     [devProps setObject:[self getNetworkProvider] forKey:@"networkProvider"];
     [devProps setObject:[self jailbroken] forKey:@"root"];
