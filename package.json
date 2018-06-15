@@ -1,6 +1,7 @@
 {
 	"name": "com.ozexpert.devicemeta",
 	"version": "0.0.2",
+	"url": "https://github.com/schmookeeg/cordova-plugin-device-meta",
 	"description": "Cordova Device Meta Plugin",
 	"cordova": {
 		"id": "com.ozexpert.devicemeta",
